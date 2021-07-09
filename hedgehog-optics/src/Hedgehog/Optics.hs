@@ -87,7 +87,7 @@ wellFormedIso ::
        Gen a
     -> Gen b
     -> Iso' a b {- ^ Isomorphism signifying that types
-          @a@ and @b@ are basically the same thing. -}
+          @a@ and @b@ are basically the same thing -}
     -> PropertyT m ()
 
 wellFormedIso genA genB o = part1 *> part2
