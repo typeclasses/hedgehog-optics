@@ -104,7 +104,7 @@ wellFormedIso genA genB o = part1 *> part2
 
 {- | Assert that a prism matches for a particular set of values:
 A 'review' of the @small@ value should produce the @large@ value, and
-a 'previous' of the @large@ value should produce the @small@ value. -}
+a 'preview' of the @large@ value should produce the @small@ value. -}
 prismExample ::
     Monad m =>
     (Show large, Eq large) =>
