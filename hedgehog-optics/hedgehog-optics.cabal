@@ -1,7 +1,7 @@
 cabal-version: 3.0
 
 name: hedgehog-optics
-version: 1.0.0
+version: 1.0.0.1
 category: Testing, Optics
 
 synopsis:
@@ -21,6 +21,8 @@ homepage:    https://github.com/typeclasses/hedgehog-optics
 bug-reports: https://github.com/typeclasses/hedgehog-optics/issues
 
 build-type: Simple
+
+extra-source-files: changelog.txt
 
 source-repository head
   type: git
