@@ -6,7 +6,7 @@ import Data.Either (Either (Left, Right))
 import Data.Eq (Eq)
 import Data.Function ((.))
 import Data.Maybe (Maybe (Just))
-import Hedgehog (Gen, PropertyT, forAll, (===))
+import Hedgehog (Gen, PropertyT, annotate, forAll, (===))
 import Optics.AffineFold (preview)
 import Optics.AffineTraversal (matching)
 import Optics.Getter (view)
@@ -36,12 +36,16 @@ wellFormedPrism genLarge genSmall o = part1 *> part2
       do
         large <- forAll genLarge
         case matching o large of
-            Right small -> review o small === large
+            Right small ->
+              do
+                annotate "The get-set law must hold for a Prism"
+                review o small === large
             Left _ -> return ()
 
     part2 =
       do
         small <- forAll genSmall
+        annotate "The set-get law must hold for a Prism"
         matching o (review o small) === Right small
 
 {- | Checks whether a lens respects the well-formedness
@@ -63,11 +67,13 @@ wellFormedLens genLarge genSmall o = getPut *> putGet *> putPut
       do
         large <- forAll genLarge
         small <- forAll genSmall
+        annotate "The set-get law must hold for a Lens"
         view o (set o small large) === small
 
     putGet =
       do
         large <- forAll genLarge
+        annotate "The get-set law must hold for a Lens"
         set o (view o large) large === large
 
     putPut =
@@ -75,6 +81,7 @@ wellFormedLens genLarge genSmall o = getPut *> putGet *> putPut
         large <- forAll genLarge
         small1 <- forAll genSmall
         small2 <- forAll genSmall
+        annotate "The set-set law must hold for a Lens"
         set o small2 (set o small1 large) === set o small2 large
 
 {- | Checks whether an isomorphism respects the
@@ -95,11 +102,13 @@ wellFormedIso genA genB o = part1 *> part2
     part1 =
       do
         b <- forAll genB
+        annotate "The set-get law must hold for an Iso"
         (view o . review o) b === b
 
     part2 =
       do
         a <- forAll genA
+        annotate "The get-set law must hold for an Iso"
         (review o . view o) a === a
 
 {- | Assert that a prism matches for a particular set of values:
