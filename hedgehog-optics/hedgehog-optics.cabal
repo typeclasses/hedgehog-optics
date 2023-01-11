@@ -3,9 +3,7 @@ cabal-version: 3.0
 name: hedgehog-optics
 version: 1.0.0.1
 category: Testing, Optics
-
-synopsis:
-    Hedgehog properties for optics laws
+synopsis: Hedgehog properties for optics laws
 
 description:
     Are your prisms well-formed? Test and be confident.
@@ -14,19 +12,17 @@ copyright: 2021 Mission Valley Software LLC
 license: MIT
 license-file: license.txt
 
-author:     Chris Martin
+author: Chris Martin
 maintainer: Chris Martin, Julie Moronuki
 
 homepage:    https://github.com/typeclasses/hedgehog-optics
 bug-reports: https://github.com/typeclasses/hedgehog-optics/issues
 
-build-type: Simple
-
 extra-source-files: *.md
 
 source-repository head
-  type: git
-  location: https://github.com/typeclasses/hedgehog-optics
+    type: git
+    location: https://github.com/typeclasses/hedgehog-optics
 
 library
     default-language: Haskell2010
@@ -40,6 +36,6 @@ library
         Hedgehog.Optics
 
     build-depends:
-        base        ^>= 4.13 || ^>= 4.14 || ^>= 4.15 || ^>= 4.16
-      , hedgehog    ^>= 1.0.4 || ^>= 1.1
+      , base ^>= 4.13 || ^>= 4.14 || ^>= 4.15 || ^>= 4.16
+      , hedgehog ^>= 1.0.4 || ^>= 1.1
       , optics-core ^>= 0.4

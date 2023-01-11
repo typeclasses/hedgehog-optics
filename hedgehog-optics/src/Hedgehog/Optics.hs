@@ -1,7 +1,9 @@
 module Hedgehog.Optics
-  ( wellFormedPrism, wellFormedLens, wellFormedIso
-  , prismExample
-  ) where
+  (
+    wellFormedPrism, wellFormedLens, wellFormedIso,
+    prismExample,
+  )
+  where
 
 import Control.Monad (Monad (return))
 import Data.Either (Either (Left, Right))
@@ -19,133 +21,119 @@ import Optics.Review (review)
 import Optics.Setter (set)
 import Text.Show (Show)
 
-{- | Checks whether a prism respects the well-formedness
-laws given in "Optics.Prism" -}
-wellFormedPrism :: Monad m => (Show large, Eq large) =>
-                              (Show small, Eq small) =>
+{-| Checks whether a prism respects the well-formedness
+    laws given in "Optics.Prism" -}
+wellFormedPrism :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen large -> Gen small
-    -> Prism' large small {- ^ Prism signifying that the
-          @small@ type is a subset of the @large@ type -}
+    -> Prism' large small -- ^ Prism signifying that the @small@ type
+                          --   is a subset of the @large@ type -}
     -> PropertyT m ()
-wellFormedPrism genLarge genSmall o =
-  do
+wellFormedPrism genLarge genSmall o = do
     getSetPrismLaw genLarge o
     setGetPrismLaw genSmall o
 
-getSetPrismLaw :: Monad m => (Show large, Eq large) =>
-                             (Show small, Eq small) =>
+getSetPrismLaw :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen large -> Prism' large small -> PropertyT m ()
-getSetPrismLaw genLarge o =
-  do
+getSetPrismLaw genLarge o = do
     large <- forAll genLarge
     case matching o large of
-        Right small ->
-          do
+        Right small -> do
             annotate "The get-set law must hold for a Prism"
             review o small === large
         Left _ -> return ()
 
-setGetPrismLaw :: Monad m => (Show large, Eq large) =>
-                             (Show small, Eq small) =>
+setGetPrismLaw :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen small -> Prism' large small -> PropertyT m ()
-setGetPrismLaw genSmall o =
-  do
+setGetPrismLaw genSmall o = do
     small <- forAll genSmall
     annotate "The set-get law must hold for a Prism"
     matching o (review o small) === Right small
 
-{- | Checks whether a lens respects the well-formedness
-laws given in "Optics.Lens" -}
-wellFormedLens :: Monad m => (Show large, Eq large) =>
-                             (Show small, Eq small) =>
+{-| Checks whether a lens respects the well-formedness
+    laws given in "Optics.Lens" -}
+wellFormedLens :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen large -> Gen small
-    -> Lens' large small {- ^ Lens signifying that the @small@
-          type is a constituent part of the @large@ type -}
+    -> Lens' large small -- ^ Lens signifying that the @small@ type is
+                         --   a constituent part of the @large@ type
     -> PropertyT m ()
-wellFormedLens genLarge genSmall o =
-  do
+wellFormedLens genLarge genSmall o = do
     getPutLensLaw genLarge genSmall o
     putGetLensLaw genLarge o
     putPutLensLaw genLarge genSmall o
 
-getPutLensLaw :: Monad m => (Show large, Eq large) =>
-                             (Show small, Eq small) =>
+getPutLensLaw :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen large -> Gen small -> Lens' large small
-                           -> PropertyT m ()
-getPutLensLaw genLarge genSmall o =
-  do
+    -> PropertyT m ()
+getPutLensLaw genLarge genSmall o = do
     large <- forAll genLarge
     small <- forAll genSmall
     annotate "The set-get law must hold for a Lens"
     view o (set o small large) === small
 
-putGetLensLaw :: Monad m => (Show large, Eq large) =>
-                             (Show small, Eq small) =>
+putGetLensLaw :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen large -> Lens' large small -> PropertyT m ()
-putGetLensLaw genLarge o =
-  do
+putGetLensLaw genLarge o = do
     large <- forAll genLarge
     annotate "The get-set law must hold for a Lens"
     set o (view o large) large === large
 
-putPutLensLaw :: Monad m => (Show large, Eq large) =>
-                             (Show small, Eq small) =>
+putPutLensLaw :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
     Gen large -> Gen small -> Lens' large small
-                           -> PropertyT m ()
-putPutLensLaw genLarge genSmall o =
-  do
+    -> PropertyT m ()
+putPutLensLaw genLarge genSmall o = do
     large <- forAll genLarge
     small1 <- forAll genSmall
     small2 <- forAll genSmall
     annotate "The set-set law must hold for a Lens"
     set o small2 (set o small1 large) === set o small2 large
 
-{- | Checks whether an isomorphism respects the
-well-formedness laws given in "Optics.Iso" -}
-wellFormedIso :: Monad m => (Show a, Eq a) =>
-                            (Show b, Eq b) =>
+{-| Checks whether an isomorphism respects the
+    well-formedness laws given in "Optics.Iso" -}
+wellFormedIso :: Monad m =>
+    (Show a, Eq a) => (Show b, Eq b) =>
     Gen a -> Gen b
-    -> Iso' a b {- ^ Isomorphism signifying that types
-          @a@ and @b@ are basically the same thing -}
+    -> Iso' a b -- ^ Isomorphism signifying that types
+                --   @a@ and @b@ are basically the same thing
     -> PropertyT m ()
-wellFormedIso genA genB o =
-  do
+wellFormedIso genA genB o = do
     setGetIsoLaw genB o
     getSetIsoLaw genA o
 
-setGetIsoLaw :: Monad m => (Show a, Eq a) =>
-                           (Show b, Eq b) =>
+setGetIsoLaw :: Monad m =>
+    (Show a, Eq a) => (Show b, Eq b) =>
     Gen b -> Iso' a b -> PropertyT m ()
-setGetIsoLaw genB o =
-  do
+setGetIsoLaw genB o = do
     b <- forAll genB
     annotate "The set-get law must hold for an Iso"
     (view o . review o) b === b
 
-getSetIsoLaw :: Monad m => (Show a, Eq a) =>
-                           (Show b, Eq b) =>
+getSetIsoLaw :: Monad m =>
+    (Show a, Eq a) => (Show b, Eq b) =>
     Gen a -> Iso' a b -> PropertyT m ()
-getSetIsoLaw genA o =
-  do
+getSetIsoLaw genA o = do
     a <- forAll genA
     annotate "The get-set law must hold for an Iso"
     (review o . view o) a === a
 
-{- | Assert that a prism matches for a particular set of values:
+{-| Assert that a prism matches for a particular set of values
+
 A 'review' of the @small@ value should produce the @large@ value, and
 a 'preview' of the @large@ value should produce the @small@ value. -}
-prismExample ::
-    Monad m =>
-    (Show large, Eq large) =>
-    (Show small, Eq small) =>
-
-       Prism' large small {- ^ Prism signifying that the
-          @small@ type is a subset of the @large@ type -}
+prismExample :: Monad m =>
+    (Show large, Eq large) => (Show small, Eq small) =>
+    Prism' large small -- ^ Prism signifying that the @small@
+                       --   type is a subset of the @large@ type
     -> large
     -> small
     -> PropertyT m ()
 
-prismExample o large small =
-  do
+prismExample o large small = do
     review o small === large
     preview o large === Just small
