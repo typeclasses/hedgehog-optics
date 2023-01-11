@@ -1,3 +1,7 @@
+### 1.0.0.2 (2023-01-10)
+
+Support GHC 9.4
+
 ### 1.0.0.1 (2022-03-03)
 
 Employ Hedgehog's `annotate` function for better error output
