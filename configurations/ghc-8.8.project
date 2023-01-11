@@ -1,4 +1,0 @@
-packages: hedgehog-optics
-
-constraints:
-    base == 4.13.*
