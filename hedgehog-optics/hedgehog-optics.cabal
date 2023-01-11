@@ -22,7 +22,7 @@ bug-reports: https://github.com/typeclasses/hedgehog-optics/issues
 
 build-type: Simple
 
-extra-source-files: changelog.txt
+extra-source-files: *.md
 
 source-repository head
   type: git
