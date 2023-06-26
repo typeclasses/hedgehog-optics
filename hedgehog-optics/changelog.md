@@ -1,3 +1,7 @@
+### 1.0.0.3 (2023-06-26)
+
+Raise language version to GHC2021
+
 ### 1.0.0.2 (2023-01-10)
 
 Support GHC 9.4
