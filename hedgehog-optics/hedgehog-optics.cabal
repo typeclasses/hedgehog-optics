@@ -1,7 +1,7 @@
 cabal-version: 3.0
 
 name: hedgehog-optics
-version: 1.0.0.3
+version: 1.0.0.4
 category: Testing, Optics
 synopsis: Hedgehog properties for optics laws
 
@@ -36,6 +36,6 @@ library
         Hedgehog.Optics
 
     build-depends:
-      , base ^>= 4.16 || ^>= 4.17 || ^>= 4.18
-      , hedgehog ^>= 1.1.2 || ^>= 1.2
+      , base ^>= 4.16 || ^>= 4.17 || ^>= 4.18 || ^>= 4.19
+      , hedgehog ^>= 1.1.2 || ^>= 1.2 || ^>= 1.3 || ^>= 1.4 || ^>= 1.5
       , optics-core ^>= 0.4.1
